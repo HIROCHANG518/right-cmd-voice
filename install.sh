@@ -89,12 +89,12 @@ key, action = sys.argv[1], sys.argv[2]
 
 if action == "switch":
     alone = [{"key_code": "spacebar", "modifiers": ["left_control"]}]
-    title = "Right Cmd → ⌃Space（切换输入法）"
-    desc = "右 Command 单击 → ⌃Space（选择上一个输入法）；按住时仍是 Command 修饰键"
+    title = "右Command单按切换输入法（⌃Space）"
+    desc = "Right Command alone → ⌃Space（组合键仍是 Command）"
 else:
     alone = [{"key_code": key}]
-    title = "Right Cmd → %s（语音输入）" % key.upper()
-    desc = "右 Command 单击 → %s；按住时仍是 Command 修饰键" % key.upper()
+    title = "右Command单按触发语音输入（%s）" % key.upper()
+    desc = "Right Command alone → %s（组合键仍是 Command）" % key.upper()
 
 rule = {
     "title": title,
@@ -251,7 +251,7 @@ open_import() {
   local enc
   enc="$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote('file://'+sys.argv[1], safe=''))" "$RULE_FILE")"
   open "karabiner://karabiner/assets/complex_modifications/import?url=$enc" 2>/dev/null || {
-    say "    ! 深链没打开，手动导入：Karabiner-Elements → Complex Modifications → Add rule"
+    say "    ! 深链没打开，手动导入：Karabiner-Elements → Complex Modifications → Add rule（旧版 Add predefined rule）"
   }
 }
 
@@ -265,7 +265,9 @@ if [ "$ACTION" = "switch" ]; then
      不需要。switch 档单击右 Command 直接发 ⌃Space，跟输入法无关。"
 else
   BIND_STEP="  ③ 绑定目标
-     微信输入法 → 设置 → 快捷键 → 语音输入 → 录成 $(echo "$KEY" | tr '[:lower:]' '[:upper:]')"
+     微信输入法 → 设置 → 快捷键 → 语音输入 → 录成 $(echo "$KEY" | tr '[:lower:]' '[:upper:]')
+     模式选「连续 / 免提」—— 单击开始、再单击结束。
+     不设免提的话，会变成按住说话，单击只闪一下。"
 fi
 
 cat <<EOF
@@ -274,8 +276,8 @@ cat <<EOF
 脚本能做的都做完了。剩下三步 Apple 不允许脚本代劳：
 
   ① 启用规则
-     Karabiner-Elements → Complex Modifications → Add rule
-     → 找到「Right Cmd →」开头那条 → Enable
+     Karabiner-Elements → Complex Modifications → Add rule（旧版 Add predefined rule）
+     → 找到「右Command单按」开头那条 → Enable
 
   ② 系统授权（首次必须）
      系统设置 → 隐私与安全性 → 输入监控 和 辅助功能

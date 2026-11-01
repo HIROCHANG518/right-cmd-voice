@@ -75,7 +75,7 @@ less install.sh          # 先看一遍
 Apple 的安全策略不允许任何脚本代劳，这份 README 不会假装能全自动：
 
 **① 启用规则**
-Karabiner-Elements → `Complex Modifications` → `Add rule` → 找到 `Right Cmd →` 开头那条 → `Enable`
+Karabiner-Elements → `Complex Modifications` → `Add rule`（旧版叫 `Add predefined rule`）→ 找到「右Command单按」开头那条 → `Enable`
 
 **② 系统授权**
 系统设置 → 隐私与安全性 → **输入监控** 和 **辅助功能** → 勾选 Karabiner 相关项 → 注销重登或重启
@@ -83,6 +83,7 @@ Karabiner-Elements → `Complex Modifications` → `Add rule` → 找到 `Right 
 
 **③ 绑定目标**
 微信输入法 → 设置 → 快捷键 → 语音输入 → 录成 `F18`
+**模式选「连续 / 免提」**——单击开始，再单击结束。不设免提的话会变成按住说话，单击只闪一下。
 
 ---
 
@@ -188,6 +189,48 @@ right-cmd-voice/
 ## 给 AI 助手用
 
 把 `skill/` 目录拷到 `~/.workbuddy/skills/`，之后对助手说「帮我把右 Command 单击设成语音输入」，它会跑自检、装 Karabiner、导规则，并把剩下必须手动的两步列清楚。
+
+---
+
+## 发布到 GitHub
+
+仓库已经在本地 `git init` 过的话，直接：
+
+```bash
+# 先在 GitHub 网页 New repository → 命名 right-cmd-voice（不要勾 README/LICENSE/.gitignore）
+git remote add origin git@github.com:HIROCHANG518/right-cmd-voice.git
+git branch -M main
+git push -u origin main
+```
+
+从零开始的话：
+
+```bash
+git init
+git add .
+git commit -m "init: right cmd voice trigger (F18)"
+git remote add origin git@github.com:HIROCHANG518/right-cmd-voice.git
+git branch -M main
+git push -u origin main
+```
+
+### 发布后自检
+
+1. 换一台机器（或删掉本地配置后）跑一遍 `curl | bash`，确认不报错
+2. 打开 Karabiner，确认规则能正常加载、没有 schema 报错
+3. 单按右 ⌘，看 `Karabiner-EventViewer` 是否输出 `f18`
+4. 微信输入法绑 `F18` + 免提模式，实测说话出字
+
+---
+
+## 贡献
+
+欢迎提 Issue 或 PR。
+
+改规则时注意两点：
+
+- `rules/*.json` 的顶层只能是 `title` 和 `rules`，不要加别的字段——Karabiner 的资源 schema 是严格的，多余字段会导致导入校验失败
+- `install.sh` 里内嵌了生成同样 JSON 的 Python 逻辑，改完规则记得两边一起改，保持语义一致
 
 ---
 

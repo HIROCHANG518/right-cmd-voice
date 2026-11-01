@@ -1,9 +1,15 @@
-.DS_Store
-*.local.json
-
-# 用户的本地 Karabiner 配置，含设备信息和路径，永远不要提交
+# Karabiner 用户本地配置（含设备指纹）
 karabiner.json
 
-# 临时产物
-/tmp/
+# macOS 系统文件
+.DS_Store
+._*
+
+# IDE 缓存
+.vscode/
+.idea/
+
+# 日志与临时产物
 *.log
+*.local.json
+/tmp/

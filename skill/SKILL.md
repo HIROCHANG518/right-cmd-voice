@@ -49,7 +49,7 @@ brew install --cask karabiner-elements
 
 ```json
 {
-  "title": "Right Cmd → F18（语音输入）",
+  "title": "右Command单按触发语音输入（F18）",
   "rules": [
     {
       "description": "右 Command 单击 → F18；按住时仍是 Command 修饰键",
@@ -96,7 +96,7 @@ open "karabiner://karabiner/assets/complex_modifications/import?url=$ENC"
 
 **这两步不能用脚本代替，也不要声称已经完成。**
 
-1. Karabiner-Elements → `Complex Modifications` → `Add rule` → 启用「Right Cmd →」
+1. Karabiner-Elements → `Complex Modifications` → `Add rule`（旧版叫 `Add predefined rule`）→ 启用「右Command单按」
 2. 系统设置 → 隐私与安全性 → **输入监控** + **辅助功能** → 勾选 Karabiner 相关项
 
 然后把目标动作绑到输出键上（例：微信输入法 → 设置 → 快捷键 → 语音输入 → 录 `F18`）。

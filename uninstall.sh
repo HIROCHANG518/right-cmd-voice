@@ -22,7 +22,7 @@ cat <<'EOF'
 还有两步需要手动做（Karabiner 只允许在界面里管理已启用规则）：
 
 1) 打开 Karabiner-Elements → Complex Modifications
-   把「Right Cmd →」开头的规则 Remove
+   把「右Command单按」开头的规则 Remove
 
 2) 微信输入法 → 设置 → 快捷键 → 语音输入
    把绑定的 F18 清掉
