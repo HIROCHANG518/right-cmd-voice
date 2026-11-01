@@ -45,16 +45,30 @@
 
 ## 4. 微信输入法录不到 F18
 
-有些录制器只认真实存在的字符键。换档：
+**先确认微信输入法现在绑的是什么。** 它的快捷键存在 MMKV 里，可以直接读出来：
 
 ```bash
-./uninstall.sh
-./install.sh --key f13
+strings -a ~/Library/Application\ Support/WeType/mmkv/wetype.settings \
+  | grep -E "voice(Toggle|PTT)Shortcut"
 ```
 
-F13/F14/F15 在 Mac 键盘上并不存在，但虚拟键码是在的，Karabiner 能发，多数录制器也能收。F18 不行就试 F13。
+默认值是：
 
-仍然录不到的话，改用 `./install.sh --action switch`，绕开输入法，直接触发系统的「选择上一个输入法」。
+```
+voiceToggleShortcut_keyCodes = "[63,49]"   # 63=fn，49=space → Fn+Space
+voicePTTShortcut_keyCodes    = "[63]"      # fn 单按 → 按住说话
+```
+
+**所以微信输入法语音输入默认是 `Fn+Space`，不是 `F18`。** 两条路：
+
+| 做法 | 命令 | 代价 |
+|---|---|---|
+| 让 Karabiner 直接发 `Fn+Space` | `./uninstall.sh && ./install.sh --key fnspace` | 零配置，输入法一个字都不用改 |
+| 把输入法里的快捷键录成 `F18` | `./install.sh --key f18`（默认） | 要去输入法设置里录一次 |
+
+如果 `F18` 怎么也录不进去（有些录制器只认真实存在的字符键），`Fn+Space` 那档通常一次就成 —— 因为它是输入法自己写进配置的键。
+
+仍然完全不行的话，改用 `./install.sh --action switch`，绕开输入法，直接触发系统的「选择上一个输入法」。
 
 ---
 

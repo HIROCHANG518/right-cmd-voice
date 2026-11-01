@@ -1,0 +1,35 @@
+{
+  "title": "右Command单按触发语音输入（Fn+Space）",
+  "rules": [
+    {
+      "description": "Right Command alone → Fn+Space（组合键仍是 Command）",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "right_command",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "right_command",
+              "lazy": true
+            }
+          ],
+          "to_if_alone": [
+            {
+              "key_code": "spacebar",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

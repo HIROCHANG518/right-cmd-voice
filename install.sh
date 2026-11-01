@@ -10,7 +10,7 @@
 #   curl -fsSL https://raw.githubusercontent.com/HIROCHANG518/right-cmd-voice/main/install.sh | bash
 #
 # 参数：
-#   --key <f18|f13|f14|f15|...>   单击时输出的键，默认 f18
+#   --key <f18|f13|f14|f15|fnspace>  单击时输出的键，默认 f18；fnspace = 发 Fn+Space（匹配微信输入法默认）
 #   --action <voice|switch>       voice = 给输入法绑语音输入（默认）；switch = 直接切输入法
 #   --dry-run                     只打印将要做什么，不落盘
 #   -h, --help
@@ -38,7 +38,7 @@ right-cmd-voice · 一键安装
   curl -fsSL https://raw.githubusercontent.com/HIROCHANG518/right-cmd-voice/main/install.sh | bash
 
 参数：
-  --key <f18|f13|...>     单击时输出的键，默认 f18
+  --key <f18|f13|fnspace>  单击时输出的键，默认 f18；fnspace = 发 Fn+Space（微信输入法默认语音键）
   --action <voice|switch> voice = 给输入法绑语音输入（默认）；switch = 直接切输入法
   --dry-run               只打印将要做什么，不落盘
   -h, --help
@@ -91,6 +91,11 @@ if action == "switch":
     alone = [{"key_code": "spacebar", "modifiers": ["left_control"]}]
     title = "右Command单按切换输入法（⌃Space）"
     desc = "Right Command alone → ⌃Space（组合键仍是 Command）"
+elif key == "fnspace":
+    # 微信输入法语音输入默认快捷键就是 Fn+Space，走这档不用改输入法配置
+    alone = [{"key_code": "spacebar", "modifiers": ["fn"]}]
+    title = "右Command单按触发语音输入（Fn+Space）"
+    desc = "Right Command alone → Fn+Space（组合键仍是 Command）"
 else:
     alone = [{"key_code": key}]
     title = "右Command单按触发语音输入（%s）" % key.upper()
@@ -263,6 +268,11 @@ open_import
 if [ "$ACTION" = "switch" ]; then
   BIND_STEP="  ③ 绑定目标
      不需要。switch 档单击右 Command 直接发 ⌃Space，跟输入法无关。"
+elif [ "$KEY" = "fnspace" ]; then
+  BIND_STEP="  ③ 绑定目标
+     不需要。fnspace 档发的就是微信输入法的默认语音快捷键 Fn+Space。
+     只需确认微信输入法 → 设置 → 快捷键 → 语音输入 仍是 Fn+Space，
+     模式选「连续 / 免提」—— 单击开始、再单击结束。"
 else
   BIND_STEP="  ③ 绑定目标
      微信输入法 → 设置 → 快捷键 → 语音输入 → 录成 $(echo "$KEY" | tr '[:lower:]' '[:upper:]')

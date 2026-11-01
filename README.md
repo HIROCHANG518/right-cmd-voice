@@ -104,14 +104,24 @@ Karabiner-Elements → `Complex Modifications` → `Add rule`（旧版叫 `Add p
 | 参数 | 说明 |
 |---|---|
 | `--key f18` | 单击时输出的键，默认 `f18`。录不进去换 `f13` |
+| `--key fnspace` | 发 `Fn+Space`。**微信输入法的语音快捷键默认就是它**，这一档不用改输入法任何设置 |
 | `--action voice` | 默认。给输入法绑语音输入 |
 | `--action switch` | 不碰输入法，直接发 `⌃Space` 切输入法 |
 | `--dry-run` | 只打印要做什么，不落盘 |
 
 ```bash
-./install.sh --key f13
-./install.sh --action switch
+./install.sh --key fnspace    # 微信输入法免配置，最省事
+./install.sh --key f13        # F18 录不进去时降级
+./install.sh --action switch  # 绕开输入法，直接切输入法
 ```
+
+三档怎么选：
+
+| 场景 | 用哪档 |
+|---|---|
+| 微信输入法，且快捷键保持默认 | `--key fnspace`（推荐先试这个） |
+| 微信输入法，语音快捷键已手动改成 F18 | `--key f18`（默认） |
+| 不想碰输入法 / 想一键切中英 | `--action switch` |
 
 ---
 
