@@ -1,0 +1,9 @@
+.DS_Store
+*.local.json
+
+# 用户的本地 Karabiner 配置，含设备信息和路径，永远不要提交
+karabiner.json
+
+# 临时产物
+/tmp/
+*.log

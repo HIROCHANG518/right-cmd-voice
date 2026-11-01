@@ -1,0 +1,30 @@
+{
+  "title": "Right Cmd → F18（语音输入）",
+  "rules": [
+    {
+      "description": "右 Command 单击 → F18；按住时仍是 Command 修饰键",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "right_command",
+            "modifiers": {
+              "optional": ["any"]
+            }
+          },
+          "to": [
+            {
+              "key_code": "right_command",
+              "lazy": true
+            }
+          ],
+          "to_if_alone": [
+            {
+              "key_code": "f18"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
