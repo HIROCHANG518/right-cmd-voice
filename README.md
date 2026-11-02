@@ -123,6 +123,8 @@ Karabiner-Elements → `Complex Modifications` → `Add rule`（旧版叫 `Add p
 | 微信输入法，语音快捷键已手动改成 F18 | `--key f18`（默认） |
 | 不想碰输入法 / 想一键切中英 | `--action switch` |
 
+> **实测推荐**：默认 F18 档 + 在微信输入法里直接按右 ⌘ 录制（Karabiner 会替你转好）。**不要用 `fnspace` 档**，除非你确定没有其它 App 抢 `fn` 标志位——`fn` 被 Globe 键、输入法按住说话、Typeless 等多方争抢，残留后 ⌘ 组合键会全部失灵。
+
 ---
 
 ## 契约
