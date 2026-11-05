@@ -41,9 +41,24 @@ brew install --cask karabiner-elements
 
 会要求输入密码。装完必须重启 `karabiner_grabber`，否则规则不生效。
 
-### 步骤 3 · 写入规则
+> brew 沙箱在某些环境下报 `sandbox-exec: sandbox_apply: Operation not permitted`，
+> `HOMEBREW_NO_SANDBOX=1` 也压不住时，改走官方 dmg：
+> 从 `https://api.github.com/repos/pqrs-org/Karabiner-Elements/releases/latest` 取 dmg，
+> `hdiutil attach` 后用 `osascript -e 'do shell script "installer -pkg <pkg> -target /" with administrator privileges'`
+> 安装（会弹系统密码框，用户输一次密码即可）。
+
+### 步骤 3 · 写入规则并预启用
 
 规则写入 `~/.config/karabiner/assets/complex_modifications/`，文件名用 `right_cmd_voice.json`。
+
+**关键：不要让用户手动 Add rule。** 直接把规则合并进 `~/.config/karabiner/karabiner.json`：
+
+- 没有 `karabiner.json` → 写入一份含该规则的最小配置（规则处于启用状态）
+- 已有 → 先备份（`karabiner.json.bak.<时间戳>`），再把 rule 追加进 selected profile 的
+  `complex_modifications.rules`（按 description 去重，不碰其它配置）
+
+`install.sh` 的新版已内置这一步；手动做时参考仓库里 `install.sh` 的
+`enable_rule_in_config` 函数。
 
 **默认档（单击 → F18，给输入法绑语音输入）：**
 
@@ -83,7 +98,10 @@ brew install --cask karabiner-elements
 [{ "key_code": "spacebar", "modifiers": ["left_control"] }]
 ```
 
-### 步骤 4 · 唤起导入
+### 步骤 4 · 唤起导入（可选兜底）
+
+步骤 3 已经把规则预启用进 `karabiner.json`，理论上不需要这一步。
+保留它只为一种情况：用户想通过 Karabiner 界面看到并管理这条规则。
 
 ```bash
 DEST="$HOME/.config/karabiner/assets/complex_modifications/right_cmd_voice.json"
@@ -92,14 +110,43 @@ ENC=$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote('file://'+sys
 open "karabiner://karabiner/assets/complex_modifications/import?url=$ENC"
 ```
 
-### 步骤 5 · 必须由用户手动完成的两步
+### 步骤 5 · 权限值守（尽量自动化，不要让用户自己翻设置）
 
-**这两步不能用脚本代替，也不要声称已经完成。**
+**为什么之前装的时候没有手动步骤、这次却有？**
+macOS 的 TCC 授权（辅助功能、输入监控）和 DriverKit 驱动扩展开关是**按机器授权**的，
+Apple 不提供任何脚本 API 直接授予。之前的机器上这些授权早就给过（Karabiner 装过并勾过），
+所以看起来全自动；换一台新机器，这三样第一次都必须由人点一下 —— 这是 macOS 的安全下限，
+任何声称能全自动跳过的方案都在骗人（要么关 SIP，要么 MDM）。
 
-1. Karabiner-Elements → `Complex Modifications` → `Add rule`（旧版叫 `Add predefined rule`）→ 启用「右Command单按」
-2. 系统设置 → 隐私与安全性 → **输入监控** + **辅助功能** → 勾选 Karabiner 相关项
+**脚本能自动化的极限（新版 install.sh 已内置，见 `wait_permissions` 函数）：**
 
-然后把目标动作绑到输出键上（例：微信输入法 → 设置 → 快捷键 → 语音输入 → 录 `F18`）。
+1. 自动拉起 Karabiner，让 macOS 自己弹授权弹窗 —— 用户只点弹窗里的「允许」
+2. 自动打开精确的系统设置深链，用户不用自己翻：
+   - 输入监控：`open "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent"`
+   - 辅助功能：`open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"`
+   - 驱动扩展：`open "x-apple.systempreferences:com.apple.LoginItems-Settings.extension"`
+3. 轮询授权状态，每项完成即自动进入下一项，全程不需要人盯：
+   - TCC 状态：`~/.local/share/karabiner/tmp/core-service-permission-check-result.json`
+     （`accessibility_process_trusted` / `iohid_listen_event_allowed`）
+   - 驱动状态：`systemextensionsctl list` 里 Karabiner-DriverKit-VirtualHIDDevice 是否 `[activated enabled]`
+4. 已授权的机器上轮询瞬间通过 → 零手动步骤，和之前一样
+
+**AI 助手值守时的加分动作：** 如果你有截屏能力，每 30 秒截一次屏看用户卡在哪一步
+（列表是空的？弹窗没点？），用一句话告诉用户下一步点哪里，比让用户描述快得多。
+
+**输入监控列表为空的坑（macOS 15+ 常见）：** Karabiner-Core-Service 可能不在列表里，
+需要点 + 手动添加：`Cmd+Shift+G` →
+`/Library/Application Support/org.pqrs/Karabiner-Elements/` → 选 `Karabiner-Core-Service.app`。
+
+**用户只需做的物理动作（无法再压缩）：**
+
+1. 授权弹窗 / 系统设置页里的「允许」和开关（各一次）
+2. 把目标动作绑到输出键上（例：微信输入法 → 设置 → 快捷键 → 语音输入 → 录 `F18`，
+   模式选「连续 / 免提」）
+
+> 不要试图直接改微信输入法的 MMKV 配置文件
+> （`~/Library/Application Support/WeType/mmkv/`，键如 `voiceToggleShortcut_keyCodes`），
+> 它是带 CRC 校验的 mmap 二进制，手写有损坏配置的风险。UI 录制是最安全的路径。
 
 ### 步骤 6 · 验证
 

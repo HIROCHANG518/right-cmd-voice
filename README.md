@@ -70,18 +70,21 @@ less install.sh          # 先看一遍
 
 **幂等**：重复跑不会出错，规则已是最新就直接跳过。
 
-### 然后这三步必须手动
+### 然后只需要点几下（脚本值守，不用自己翻设置）
 
-Apple 的安全策略不允许任何脚本代劳，这份 README 不会假装能全自动：
+脚本会自动把规则预启用进 `karabiner.json`（不需要手动 Add rule），并进入授权值守：
+自动弹授权窗、自动打开精确的系统设置页、轮询到全部完成才继续。
 
-**① 启用规则**
-Karabiner-Elements → `Complex Modifications` → `Add rule`（旧版叫 `Add predefined rule`）→ 找到「右Command单按」开头那条 → `Enable`
+Apple 的安全模型不允许任何脚本直接授予 TCC 权限和驱动扩展开关，所以这几个「点一下」省不掉：
 
-**② 系统授权**
-系统设置 → 隐私与安全性 → **输入监控** 和 **辅助功能** → 勾选 Karabiner 相关项 → 注销重登或重启
-（没授权时 `karabiner_grabber` 不常驻，规则等于没装）
+**① 授权弹窗 / 开关（值守中按提示点即可）**
+- 弹窗出现 → 点「允许」
+- 输入监控列表为空时：点 + → `Cmd+Shift+G` →
+  `/Library/Application Support/org.pqrs/Karabiner-Elements/` → 选 `Karabiner-Core-Service.app`
+- 驱动扩展：系统设置 → 登录项与扩展 → 驱动扩展 → 打开 Karabiner-DriverKit-VirtualHIDDevice
+（已授权过的机器上，值守瞬间通过，零操作）
 
-**③ 绑定目标**
+**② 绑定目标**
 微信输入法 → 设置 → 快捷键 → 语音输入 → 录成 `F18`
 **模式选「连续 / 免提」**——单击开始，再单击结束。不设免提的话会变成按住说话，单击只闪一下。
 
